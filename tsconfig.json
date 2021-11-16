@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "module": "ESNext",
+    "module": "CommonJS",
     "target": "ESNext",
     "moduleResolution": "Node",
     "lib": [
@@ -9,6 +9,9 @@
       "DOM"
     ],
     "types": [
+      "node",
+      "express",
+      "compression",
       "jest"
     ],
     "allowJs": false,
