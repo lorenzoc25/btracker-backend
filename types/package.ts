@@ -22,6 +22,6 @@ export interface Package {
   tracking: string;
   name: string;
   carrier: Carrier;
-  history: History;
+  history: History[];
   status: Status;
 }
