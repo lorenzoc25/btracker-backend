@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Node",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "types": [
+      "jest"
+    ],
+    "allowJs": false,
+    "alwaysStrict": true,
+    "strict": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "types/**/*.ts",
+    "tests/**/*.test.ts"
+  ],
+  "exclude": [
+    "node_modules/",
+    "dist/"
+  ]
+}
