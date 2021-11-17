@@ -21,12 +21,16 @@
   },
   "homepage": "https://github.com/lorenzoc25/btracker-backend#readme",
   "dependencies": {
+    "axios": "^0.24.0",
+    "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
     "express": "^4.17.1",
+    "express-jwt": "^6.1.0",
     "mongodb": "^4.1.4",
     "mongoose": "^6.0.13"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.2",

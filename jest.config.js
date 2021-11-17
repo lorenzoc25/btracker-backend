@@ -3,4 +3,7 @@ module.exports = {
   collectCoverage: true,
   testPathIgnorePatterns: ['dist/'],
   coveragePathIgnorePatterns: ['dist/'],
+  setupFilesAfterEnv: [
+    '<rootDir>/tests/setup.ts',
+  ],
 };
