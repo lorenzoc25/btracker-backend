@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "precompress": "node ",
     "test": "jest",
-    "prebuild": "node src/boots/env.js",
     "build": "tsc",
     "start": "node dist/src/index.js",
     "lint": "eslint . --cache --fix --ext .ts"
