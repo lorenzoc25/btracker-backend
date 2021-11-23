@@ -4,6 +4,7 @@ import compression from 'compression';
 
 import sessionRoute from './routes/session';
 import userRoute from './routes/user';
+import trackingRoute from './routes/tracking';
 
 const main = async () => {
   await mongoose.connect(
@@ -17,13 +18,14 @@ const main = async () => {
 
   app.use('/session', sessionRoute);
   app.use('/user', userRoute);
+  app.use('/tracking', trackingRoute);
 
   app.get('/', (_, res) => {
     res.send('btrack backend service');
   });
 
-  app.listen(3000, () => {
-    console.log('The application is listening on port 3000');
+  app.listen(process.env.PORT, () => {
+    console.log('The application is listening on port %d', process.env.PORT);
   });
 };
 
