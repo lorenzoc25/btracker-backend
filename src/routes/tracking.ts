@@ -29,9 +29,20 @@ router.get('/:trackingId', async (
     },
   );
 
-  // const carrierName = carrierResponse.data.data.code;
+  const carrierName = carrierResponse.data.data[0].code;
+  const trackingQuery = `?carrier_code=${carrierName}&tracking_number=${trackingNum}`;
 
-  res.status(200).send(carrierResponse.data.data);
+  const shipEngine = axios.create({
+    baseURL: process.env.SHIPENGINE_API,
+    headers: {
+      'API-Key': process.env.SHIPENGINE_API_KEY,
+    },
+  });
+
+  const response = await shipEngine.get(
+    trackingQuery,
+  );
+  res.status(200).send(response.data);
 });
 
 export default router;
