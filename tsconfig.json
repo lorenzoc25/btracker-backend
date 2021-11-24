@@ -35,7 +35,7 @@
     "src/**/*.ts",
     "types/**/*.ts",
     "tests/**/*.ts"
-  ],
+, "src/boots/env.ts"  ],
   "exclude": [
     "node_modules/",
     "dist/"

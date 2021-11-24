@@ -2,10 +2,15 @@ import express, { json } from 'express';
 import mongoose from 'mongoose';
 import compression from 'compression';
 
+import dev from './boots/env';
 import sessionRoute from './routes/session';
 import userRoute from './routes/user';
+import trackingRoute from './routes/tracking';
 
 const main = async () => {
+  if (dev) {
+    console.log('Loaded the env variables');
+  }
   await mongoose.connect(
     'mongodb://127.0.0.1:27017/btracker',
   );
@@ -17,13 +22,14 @@ const main = async () => {
 
   app.use('/session', sessionRoute);
   app.use('/user', userRoute);
+  app.use('/tracking', trackingRoute);
 
   app.get('/', (_, res) => {
     res.send('btrack backend service');
   });
 
-  app.listen(3000, () => {
-    console.log('The application is listening on port 3000');
+  app.listen(process.env.PORT, () => {
+    console.log('The application is listening on port %d', process.env.PORT);
   });
 };
 
