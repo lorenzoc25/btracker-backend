@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import mongoose from 'mongoose';
 import compression from 'compression';
+import jwt from 'express-jwt';
 
 import dev from './boots/env';
 import sessionRoute from './routes/session';
@@ -19,6 +20,22 @@ const main = async () => {
   const app = express();
   app.use(json());
   app.use(compression());
+  app.use(jwt({
+    secret: 'test-encrypt-key',
+    algorithms: ['HS256'],
+    requestProperty: 'auth',
+  }).unless({
+    path: [
+      {
+        url: '/user',
+        methods: ['PUT'],
+      },
+      {
+        url: 'session',
+        methods: ['POST'],
+      },
+    ],
+  }));
 
   app.use('/session', sessionRoute);
   app.use('/user', userRoute);

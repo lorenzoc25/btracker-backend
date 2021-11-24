@@ -6,13 +6,13 @@ import bcrypt from 'bcrypt';
 
 import { UserModel } from '../schema/userSchema';
 
-const router = express.Router();
-
 interface UserPostRequest {
   email?: string,
   username?: string,
   password?: string,
 }
+
+const router = express.Router();
 
 router.post('/', async (
   req: Request<{}, {}, UserPostRequest>,
@@ -45,11 +45,10 @@ router.post('/', async (
     return;
   }
 
-  const salt = await bcrypt.genSalt(10);
   const user = new UserModel({
     email,
     username,
-    password: await bcrypt.hash(password, salt),
+    password: await bcrypt.hash(password, 10),
   });
   await user.save();
   res.status(200).send();

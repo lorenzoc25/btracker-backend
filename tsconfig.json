@@ -8,13 +8,6 @@
       "ESNext",
       "DOM"
     ],
-    "types": [
-      "node",
-      "express",
-      "compression",
-      "bcrypt",
-      "jest"
-    ],
     "allowJs": false,
     "alwaysStrict": true,
     "strict": true,
