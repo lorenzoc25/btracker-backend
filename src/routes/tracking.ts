@@ -1,11 +1,8 @@
+import axios from 'axios';
 import express, {
   Request,
   Response,
 } from 'express';
-
-import Easypost from '@easypost/api';
-
-const easypostAPI = new Easypost(process.env.EASYPOST_API_KEY);
 
 const router = express.Router();
 
@@ -13,32 +10,28 @@ router.get('/:trackingId', async (
   req: Request,
   res: Response,
 ) => {
-  const trackingNumber: string = req.params.trackingId;
-  try {
-    const tracker = new easypostAPI.Tracker({
-      tracking_code: trackingNumber,
-      carrier: 'UPS',
-    });
-
-    await tracker.save();
-  } catch (err) {
-    console.log('FUCK YOU! this is not UPS');
-    console.log(err);
+  const trackingNum: string = req.params.trackingId;
+  if (process.env.TRACKING_API_KEY == null
+    || process.env.DETECT_API == null
+    || process.env.SHIPENGINE_API_KEY == null
+    || process.env.SHIPENGINE_API == null) {
+    throw new Error('Env variable is not loaded');
   }
+  const trackingMore = axios.create({
+    headers: {
+      'Trackingmore-Api-Key': process.env.TRACKING_API_KEY,
+    },
+  });
+  const carrierResponse = await trackingMore.post(
+    process.env.DETECT_API,
+    {
+      tracking_number: trackingNum,
+    },
+  );
 
-  try {
-    const tracker = new easypostAPI.Tracker({
-      tracking_code: trackingNumber,
-      carrier: 'USPS',
-    });
+  // const carrierName = carrierResponse.data.data.code;
 
-    await tracker.save();
-  } catch (err) {
-    console.log('FUCK YOU! this is not USPS');
-    console.log(err);
-  }
-
-  res.status(200).send();
+  res.status(200).send(carrierResponse.data.data);
 });
 
 export default router;
