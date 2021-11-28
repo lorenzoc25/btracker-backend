@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 async function getTracking(trackingNum: string) {
-  if (process.env.TRACKING_API_KEY == null
-    || process.env.DETECT_API == null
-    || process.env.SHIPENGINE_API_KEY == null
-    || process.env.SHIPENGINE_API == null) {
+  if (process.env.TRACKING_API_KEY === undefined
+    || process.env.DETECT_API === undefined
+    || process.env.SHIPENGINE_API_KEY === undefined
+    || process.env.SHIPENGINE_API === undefined
+  ) {
     throw new Error('Env variable is not loaded');
   }
   const trackingMore = axios.create({
