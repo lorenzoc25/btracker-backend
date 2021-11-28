@@ -7,6 +7,7 @@ export const historySchema = new Schema<History>({
     type: String,
     required: true,
   },
+  message: String,
   location: String,
   timestamp: Number,
 });

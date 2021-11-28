@@ -1,6 +1,7 @@
 export interface History {
   status: string;
   location: string;
+  message: string;
   timestamp: number;
 }
 
