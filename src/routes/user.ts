@@ -3,16 +3,17 @@ import express, {
   Response,
 } from 'express';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 import { UserModel } from '../schema/userSchema';
-
-const router = express.Router();
 
 interface UserPostRequest {
   email?: string,
   username?: string,
   password?: string,
 }
+
+const router = express.Router();
 
 router.post('/', async (
   req: Request<{}, {}, UserPostRequest>,
@@ -45,14 +46,42 @@ router.post('/', async (
     return;
   }
 
-  const salt = await bcrypt.genSalt(10);
+  const count = await UserModel.countDocuments({
+    email,
+  }).exec();
+  if (count > 0) {
+    res.status(409).json({
+      message: 'The user exists in the database',
+    });
+    return;
+  }
+
   const user = new UserModel({
     email,
     username,
-    password: await bcrypt.hash(password, salt),
+    password: await bcrypt.hash(password, 10),
   });
   await user.save();
-  res.status(200).send();
+
+  const encryptKey = process.env.JWT_ENCRYPT_KEY;
+  if (encryptKey === undefined) {
+    res.status(500).json({
+      message: 'The JWT_ENCRYPT_KEY is not present in the .env file',
+    });
+    return;
+  }
+
+  const token = jwt.sign(
+    {
+      email: user.email,
+    },
+    encryptKey,
+  );
+  res.status(200).json({
+    token,
+    email: user.email,
+    username: user.username,
+  });
 });
 
 export default router;
