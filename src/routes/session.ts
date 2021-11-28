@@ -76,12 +76,20 @@ router.post('/', async (
     user.password,
   );
 
+  const encryptKey = process.env.JWT_ENCRYPT_KEY;
+  if (encryptKey === undefined) {
+    res.status(500).json({
+      message: 'The JWT_ENCRYPT_KEY is not present in the .env file',
+    });
+    return;
+  }
+
   if (authenticate) {
     const token = jwt.sign(
       {
         email: user.email,
       },
-      'test-encrypt-key',
+      encryptKey,
     );
     res.status(200).json({
       token,
