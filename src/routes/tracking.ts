@@ -27,30 +27,34 @@ router.get('/:trackingId', async (
   const trackingNum = req.params.trackingId;
   const userEmail = req.auth.email;
 
-  await UserModel.findOneAndUpdate(
-    {
-      email: userEmail,
-    },
-    {
-      $addToSet: {
-        packageList: trackingNum,
-      },
-    },
-  );
-
-  const response = await getrackingFromDB(trackingNum);
-
-  if (
-    response.length === 0
-    || Date.now() - response[0].lastUpdate > 1800
-  ) {
-    await PackageModel.deleteMany({
-      tracking: trackingNum,
+  try {
+    const response = await getrackingFromDB(trackingNum);
+    if (
+      response.length === 0
+      || Date.now() - response[0].lastUpdate > 1800
+    ) {
+      await PackageModel.deleteMany({
+        tracking: trackingNum,
+      });
+      await updateTracking(trackingNum);
+      await UserModel.findOneAndUpdate(
+        {
+          email: userEmail,
+        },
+        {
+          $addToSet: {
+            packageList: trackingNum,
+          },
+        },
+      );
+      res.status(200).send(await getrackingFromDB(trackingNum));
+    } else {
+      res.status(200).send(response);
+    }
+  } catch {
+    res.status(400).json({
+      message: 'Invalid Tracking Number',
     });
-    await updateTracking(trackingNum);
-    res.status(200).send(await getrackingFromDB(trackingNum));
-  } else {
-    res.status(200).send(response);
   }
 });
 
