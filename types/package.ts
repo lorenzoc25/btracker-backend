@@ -25,4 +25,5 @@ export interface Package {
   carrier: Carrier;
   history: History[];
   status: Status;
+  lastUpdate: number;
 }

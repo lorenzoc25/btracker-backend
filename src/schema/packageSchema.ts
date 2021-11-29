@@ -29,6 +29,10 @@ export const packageSchema = new Schema<Package>({
     type: String,
     required: true,
   },
+  lastUpdate: {
+    type: Number,
+    required: true,
+  },
   history: [historySchema],
 });
 
