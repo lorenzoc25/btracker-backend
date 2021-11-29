@@ -1,6 +1,6 @@
 import { Carrier } from '../../types/package';
 
-const carrierCodeConversion = async (code: string) => {
+const carrierCodeConversion = (code: string) => {
   const c = code.toLowerCase();
   if (c === 'usps') {
     return Carrier.USPS;

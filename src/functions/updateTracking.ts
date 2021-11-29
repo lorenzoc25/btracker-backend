@@ -2,7 +2,7 @@ import { Document, Types } from 'mongoose';
 import { HistoryModel, PackageModel } from '../schema/packageSchema';
 import getTrackingInfo from './getTracking';
 import { History } from '../../types/package';
-import carrierCodeConversion from './getStatus';
+import carrierCodeConversion from './decodeHelpers';
 
 const updateTracking = async (trackingNum: string) => {
   const info = await getTrackingInfo(trackingNum);

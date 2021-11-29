@@ -31,7 +31,7 @@ router.get('/:trackingId', async (
       email: userEmail,
     },
     {
-      $push: {
+      $addToSet: {
         packageList: trackingNum,
       },
     },
