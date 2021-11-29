@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function getTracking(trackingNum: string) {
+const getTracking = async (trackingNum: string) => {
   if (process.env.TRACKING_API_KEY === undefined
     || process.env.DETECT_API === undefined
     || process.env.SHIPENGINE_API_KEY === undefined
@@ -13,6 +13,7 @@ async function getTracking(trackingNum: string) {
       'Trackingmore-Api-Key': process.env.TRACKING_API_KEY,
     },
   });
+
   const carrierResponse = await trackingMore.post(
     process.env.DETECT_API,
     {
@@ -34,6 +35,6 @@ async function getTracking(trackingNum: string) {
     trackingQuery,
   );
   return response.data;
-}
+};
 
 export default getTracking;

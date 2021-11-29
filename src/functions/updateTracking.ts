@@ -2,8 +2,9 @@ import { Document, Types } from 'mongoose';
 import { HistoryModel, PackageModel } from '../schema/packageSchema';
 import getTrackingInfo from './getTracking';
 import { History } from '../../types/package';
+import carrierCodeConversion from './getStatus';
 
-async function updateTracking(trackingNum: string) {
+const updateTracking = async (trackingNum: string) => {
   const info = await getTrackingInfo(trackingNum);
 
   const histEvents = info.events;
@@ -25,7 +26,7 @@ async function updateTracking(trackingNum: string) {
   const delivery = new PackageModel({
     tracking: trackingNum,
     name: 'Delivery',
-    carrier: info.carrier_code,
+    carrier: carrierCodeConversion(info.carrier_code),
     status: info.status_description,
     lastUpdate: Date.now(),
     history: historyList,
@@ -33,6 +34,6 @@ async function updateTracking(trackingNum: string) {
 
   await delivery.save();
   return delivery;
-}
+};
 
 export default updateTracking;
