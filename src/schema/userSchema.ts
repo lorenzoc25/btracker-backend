@@ -1,6 +1,5 @@
 import { model, Schema } from 'mongoose';
 
-import { packageSchema } from './packageSchema';
 import { User } from '../../types/user';
 
 export const userSchema = new Schema<User>({
@@ -18,7 +17,7 @@ export const userSchema = new Schema<User>({
     required: true,
   },
   packageList: {
-    type: [packageSchema],
+    type: [String],
     default: [],
   },
 });
