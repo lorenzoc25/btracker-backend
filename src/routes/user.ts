@@ -4,8 +4,8 @@ import express, {
 } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { HydratedDocument } from 'mongoose';
 
-import { Document, Types } from 'mongoose';
 import { UserModel } from '../schema/userSchema';
 import { AuthRequest } from '../../types/auth';
 import { PackageModel } from '../schema/packageSchema';
@@ -88,7 +88,7 @@ router.post('/', async (
   });
 });
 
-router.get('/trackAll', async (
+router.get('/tracking', async (
   req: AuthRequest,
   res: Response,
 ) => {
@@ -102,30 +102,32 @@ router.get('/trackAll', async (
     return;
   }
 
-  const userEmail = req.auth.email;
-  const userInfo = await UserModel.findOne(
+  const user = await UserModel.findOne(
     {
-      email: userEmail,
+      email: req.auth.email,
     },
   );
-  if (userInfo === undefined || userInfo === null) {
+
+  if (user === null) {
     res.status(400).json({
-      message: 'No such user found',
+      message: 'The user is not exist in the database',
     });
     return;
   }
-  const trackingList: (
-    (Document<any, any, Package>
-    & Package
-    & { _id: Types.ObjectId; })
-    | null)[] = [];
-  const trackingNums = userInfo.packageList;
-  await Promise.all(trackingNums.map(async (tracking) => {
+
+  const trackingList: HydratedDocument<Package>[] = [];
+  const trackingNums = user.packageList;
+  await Promise.all(trackingNums.map(async (
+    tracking: string,
+  ) => {
     const trackingInfo = await PackageModel.findOne(
       {
         tracking,
       },
     );
+    if (trackingInfo === null) {
+      return;
+    }
     trackingList.push(trackingInfo);
   }));
 
