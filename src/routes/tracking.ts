@@ -1,6 +1,7 @@
 import express, {
   Response,
 } from 'express';
+
 import getrackingFromDB from '../functions/getTrackingFromDB';
 import updateTracking from '../functions/updateTracking';
 import { AuthRequest } from '../../types/auth';
@@ -23,7 +24,7 @@ router.get('/:trackingId', async (
     return;
   }
 
-  const trackingNum: string = req.params.trackingId;
+  const trackingNum = req.params.trackingId;
   const userEmail = req.auth.email;
 
   await UserModel.findOneAndUpdate(
@@ -39,8 +40,10 @@ router.get('/:trackingId', async (
 
   const response = await getrackingFromDB(trackingNum);
 
-  if (response.length === 0
-    || Date.now() - response[0].lastUpdate > 1800) {
+  if (
+    response.length === 0
+    || Date.now() - response[0].lastUpdate > 1800
+  ) {
     await PackageModel.deleteMany({
       tracking: trackingNum,
     });
@@ -49,6 +52,81 @@ router.get('/:trackingId', async (
   } else {
     res.status(200).send(response);
   }
+});
+
+router.put('/:trackingId', async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  if (req.body === undefined) {
+    res.status(400).json({
+      message: 'The field \'tracking\' and \'name\' are missing in the request body',
+    });
+    return;
+  }
+
+  const {
+    tracking,
+    name,
+  } = req.body;
+
+  if (tracking === undefined) {
+    res.status(400).json({
+      message: 'The field \'tracking\' is missing in the request body',
+    });
+    return;
+  }
+
+  if (name === undefined) {
+    res.status(400).json({
+      message: 'The field \'name\' is missing in the request body',
+    });
+    return;
+  }
+
+  const filter = { tracking };
+  const update = { name };
+
+  const response = await PackageModel.findOneAndUpdate(
+    filter,
+    update,
+  );
+
+  res.status(200).send(response);
+});
+
+router.delete('/:trackingId', async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  if (
+    req.auth === undefined
+    || req.auth.email === undefined
+  ) {
+    res.status(403).json({
+      message: 'The access token is missing or invalid',
+    });
+    return;
+  }
+  const trackingNum = req.params.trackingId;
+
+  const userEmail = req.auth.email;
+  await UserModel.findOneAndUpdate(
+    {
+      email: userEmail,
+    },
+    {
+      $pull: {
+        packageList: trackingNum,
+      },
+    },
+  );
+
+  const response = await PackageModel.deleteMany({
+    tracking: trackingNum,
+  });
+
+  res.status(200).send(response);
 });
 
 export default router;
