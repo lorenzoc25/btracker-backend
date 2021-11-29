@@ -64,6 +64,16 @@ router.post('/:trackingId', async (
 
   const trackingNum = req.params.trackingId;
   const userEmail = req.auth.email;
+  await UserModel.findOneAndUpdate(
+    {
+      email: userEmail,
+    },
+    {
+      $addToSet: {
+        packageList: trackingNum,
+      },
+    },
+  );
 
   try {
     const response = await getrackingFromDB(trackingNum);
@@ -71,16 +81,6 @@ router.post('/:trackingId', async (
       response.length === 0
     ) {
       await updateTracking(trackingNum);
-      await UserModel.findOneAndUpdate(
-        {
-          email: userEmail,
-        },
-        {
-          $addToSet: {
-            packageList: trackingNum,
-          },
-        },
-      );
       const trackingInfo = await getrackingFromDB(trackingNum);
       res.status(200).send(trackingInfo[0]);
     } else {
