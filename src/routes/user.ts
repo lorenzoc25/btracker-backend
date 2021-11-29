@@ -5,11 +5,11 @@ import express, {
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+import { Document, Types } from 'mongoose';
 import { UserModel } from '../schema/userSchema';
 import { AuthRequest } from '../../types/auth';
 import { PackageModel } from '../schema/packageSchema';
 import { Package } from '../../types/package';
-import { Document, Types } from 'mongoose';
 
 interface UserPostRequest {
   email?: string,
