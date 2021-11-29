@@ -130,7 +130,12 @@ router.put('/:trackingId', async (
     filter,
     update,
   );
-
+  if (response === null) {
+    res.status(404).json({
+      message: 'No tracking number found',
+    });
+    return;
+  }
   res.status(200).send(response);
 });
 
