@@ -9,8 +9,6 @@ import unauthorizedError from './middleware/unauthorized-error';
 import sessionRoute from './routes/session';
 import userRoute from './routes/user';
 import trackingRoute from './routes/tracking';
-import deleteTrackingRoute from './routes/deleteTracking';
-import updateTrackingRoute from './routes/updateTracking';
 
 const main = async () => {
   if (dotenv) {
@@ -29,8 +27,11 @@ const main = async () => {
     ],
     optionsSuccessStatus: 200,
   }));
+
   app.use(json());
+
   app.use(compression());
+
   app.use(jwt({
     secret: process.env.JWT_ENCRYPT_KEY || '',
     algorithms: ['HS256'],
@@ -50,16 +51,17 @@ const main = async () => {
       },
     ],
   }));
+
   app.use(unauthorizedError);
 
   app.use('/session', sessionRoute);
+
   app.use('/user', userRoute);
+
   app.use('/tracking', trackingRoute);
-  app.use('/deleteTracking', deleteTrackingRoute);
-  app.use('/updateTracking', updateTrackingRoute);
 
   app.get('/', (_, res) => {
-    res.send('btrack backend service');
+    res.send('btracker backend service');
   });
 
   app.listen(process.env.PORT, () => {
