@@ -6,7 +6,7 @@ import { PackageModel } from '../schema/packageSchema';
 
 const router = express.Router();
 
-router.get('/:trackingId', async (
+router.delete('/:trackingId', async (
   req: Request,
   res: Response,
 ) => {

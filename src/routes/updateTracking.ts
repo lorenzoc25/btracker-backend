@@ -2,47 +2,49 @@ import express, {
   Request,
   Response,
 } from 'express';
-import { Document, Types } from 'mongoose';
-import { HistoryModel, PackageModel } from '../schema/packageSchema';
-import getTrackingInfo from '../functions/getTracking';
-import { History } from '../../types/package';
+import { PackageModel } from '../schema/packageSchema';
 
 const router = express.Router();
 
-router.get('/:trackingId', async (
+router.post('/', async (
   req: Request,
   res: Response,
 ) => {
-  const trackingNum: string = req.params.trackingId;
-  const info = await getTrackingInfo(trackingNum);
-
-  const histEvents = info.events;
-  const historyList: (Document<any, any, History> & History & { _id: Types.ObjectId; })[] = [];
-
-  histEvents.forEach((histEvent: {
-    description: string;
-    city_locality: string;
-    occurred_at: string;
-  }) => {
-    const history = new HistoryModel({
-      status: histEvent.description,
-      location: histEvent.city_locality,
-      timestamp: Date.parse(histEvent.occurred_at), // 2021-11-22T14:46:00Z
+  if (req.body === undefined) {
+    res.status(400).json({
+      message: 'The field \'tracking\' and \'name\' are missing in the request body',
     });
-    historyList.push(history);
-  });
+    return;
+  }
 
-  const delivery = new PackageModel({
-    tracking: trackingNum,
-    name: 'Delivery',
-    carrier: info.carrier_code,
-    status: info.status_description,
-    lastUpdate: Date.now(),
-    history: historyList,
-  });
+  const {
+    tracking,
+    name,
+  } = req.body;
 
-  await delivery.save();
-  res.status(200).send(delivery);
+  if (tracking === undefined) {
+    res.status(400).json({
+      message: 'The field \'tracking\' is missing in the request body',
+    });
+    return;
+  }
+
+  if (name === undefined) {
+    res.status(400).json({
+      message: 'The field \'name\' is missing in the request body',
+    });
+    return;
+  }
+
+  const filter = { tracking };
+  const update = { name };
+
+  const response = await PackageModel.findOneAndUpdate(
+    filter,
+    update,
+  );
+
+  res.status(200).send(response);
 });
 
 export default router;

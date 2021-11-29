@@ -7,6 +7,7 @@ import sessionRoute from './routes/session';
 import userRoute from './routes/user';
 import trackingRoute from './routes/tracking';
 import deleteTrackingRoute from './routes/deleteTracking';
+import updateTrackingRoute from './routes/updateTracking';
 
 const main = async () => {
   if (dev) {
@@ -25,6 +26,7 @@ const main = async () => {
   app.use('/user', userRoute);
   app.use('/tracking', trackingRoute);
   app.use('/deleteTracking', deleteTrackingRoute);
+  app.use('/updateTracking', updateTrackingRoute);
 
   app.get('/', (_, res) => {
     res.send('btrack backend service');
