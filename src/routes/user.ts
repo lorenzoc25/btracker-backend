@@ -6,6 +6,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { UserModel } from '../schema/userSchema';
+import { AuthRequest } from '../../types/auth';
+import { PackageModel } from '../schema/packageSchema';
+import { Package } from '../../types/package';
+import { Document, Types } from 'mongoose';
 
 interface UserPostRequest {
   email?: string,
@@ -82,6 +86,50 @@ router.post('/', async (
     email: user.email,
     username: user.username,
   });
+});
+
+router.get('/trackAll', async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  if (
+    req.auth === undefined
+    || req.auth.email === undefined
+  ) {
+    res.status(403).json({
+      message: 'The access token is missing or invalid',
+    });
+    return;
+  }
+
+  const userEmail = req.auth.email;
+  const userInfo = await UserModel.findOne(
+    {
+      email: userEmail,
+    },
+  );
+  if (userInfo === undefined || userInfo === null) {
+    res.status(400).json({
+      message: 'No such user found',
+    });
+    return;
+  }
+  const trackingList: (
+    (Document<any, any, Package>
+    & Package
+    & { _id: Types.ObjectId; })
+    | null)[] = [];
+  const trackingNums = userInfo.packageList;
+  await Promise.all(trackingNums.map(async (tracking) => {
+    const trackingInfo = await PackageModel.findOne(
+      {
+        tracking,
+      },
+    );
+    trackingList.push(trackingInfo);
+  }));
+
+  res.status(200).send(trackingList);
 });
 
 export default router;
