@@ -2,6 +2,7 @@ import express, { json } from 'express';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import jwt from 'express-jwt';
+import cors from 'cors';
 
 import dotenv from './boot/env';
 import unauthorizedError from './middleware/unauthorized-error';
@@ -20,6 +21,12 @@ const main = async () => {
   console.log('The application is connecting to the MongoDB server');
 
   const app = express();
+  app.use(cors({
+    origin: [
+      'http://localhost:3000',
+    ],
+    optionsSuccessStatus: 200,
+  }));
   app.use(json());
   app.use(compression());
   app.use(jwt({
