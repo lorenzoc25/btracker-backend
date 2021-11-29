@@ -22,11 +22,11 @@ const updateTracking = async (trackingNum: string) => {
     });
     historyList.push(history);
   });
-
+  const carrier = carrierCodeConversion(info.carrier_code);
   const delivery = new PackageModel({
     tracking: trackingNum,
-    name: 'Delivery',
-    carrier: carrierCodeConversion(info.carrier_code),
+    name: `Package From ${carrier}`,
+    carrier,
     status: info.status_description,
     lastUpdate: Date.now(),
     history: historyList,

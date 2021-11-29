@@ -25,17 +25,51 @@ router.get('/:trackingId', async (
   }
 
   const trackingNum = req.params.trackingId;
+
+  try {
+    const response = await getrackingFromDB(trackingNum);
+    if (response.length === 0) {
+      res.status(404).json({
+        message: 'Package not found',
+      });
+    }
+    if (Date.now() - response[0].lastUpdate < 1800 * 1000) {
+      res.status(200).send(response[0]);
+    } else {
+      await PackageModel.deleteMany({
+        tracking: trackingNum,
+      });
+      await updateTracking(trackingNum);
+      const trackingInfo = await getrackingFromDB(trackingNum);
+      res.status(200).send(trackingInfo[0]);
+    }
+  } catch {
+    res.status(400).send();
+  }
+});
+
+router.post('/:trackingId', async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  if (
+    req.auth === undefined
+    || req.auth.email === undefined
+  ) {
+    res.status(403).json({
+      message: 'The access token is missing or invalid',
+    });
+    return;
+  }
+
+  const trackingNum = req.params.trackingId;
   const userEmail = req.auth.email;
 
   try {
     const response = await getrackingFromDB(trackingNum);
     if (
       response.length === 0
-      || Date.now() - response[0].lastUpdate > 1800
     ) {
-      await PackageModel.deleteMany({
-        tracking: trackingNum,
-      });
       await updateTracking(trackingNum);
       await UserModel.findOneAndUpdate(
         {
@@ -47,9 +81,10 @@ router.get('/:trackingId', async (
           },
         },
       );
-      res.status(200).send(await getrackingFromDB(trackingNum));
+      const trackingInfo = await getrackingFromDB(trackingNum);
+      res.status(200).send(trackingInfo[0]);
     } else {
-      res.status(200).send(response);
+      res.status(200).send(response[0]);
     }
   } catch {
     res.status(400).json({
