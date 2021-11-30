@@ -138,10 +138,11 @@ router.get('/tracking', async (
     if (trackingInfo === null) {
       return;
     }
-    if (Date.now() - trackingInfo[0].lastUpdate < 1800 * 1000) {
-      trackingList.push(trackingInfo[0]);
+    console.log(trackingInfo);
+    if (Date.now() - trackingInfo.lastUpdate < 1800 * 1000) {
+      trackingList.push(trackingInfo);
     } else {
-      const { name } = trackingInfo[0];
+      const { name } = trackingInfo;
       await PackageModel.deleteMany({
         tracking,
       });
