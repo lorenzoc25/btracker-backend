@@ -4,7 +4,7 @@ import getTrackingInfo from './getTracking';
 import { History } from '../../types/package';
 import carrierCodeConversion from './decodeHelpers';
 
-const updateTracking = async (trackingNum: string) => {
+const updateTracking = async (trackingNum: string, name = '') => {
   const info = await getTrackingInfo(trackingNum);
 
   const histEvents = info.events;
@@ -23,9 +23,10 @@ const updateTracking = async (trackingNum: string) => {
     historyList.push(history);
   });
   const carrier = carrierCodeConversion(info.carrier_code);
+  const packageName = name.length === 0 ? `Package From ${carrier}` : name;
   const delivery = new PackageModel({
     tracking: trackingNum,
-    name: `Package From ${carrier}`,
+    name: packageName,
     carrier,
     status: info.status_description,
     lastUpdate: Date.now(),

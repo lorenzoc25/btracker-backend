@@ -27,10 +27,11 @@ router.get('/:trackingId', async (
     if (Date.now() - response[0].lastUpdate < 1800 * 1000) {
       res.status(200).send(response[0]);
     } else {
+      const { name } = response[0];
       await PackageModel.deleteMany({
         tracking: trackingNum,
       });
-      await updateTracking(trackingNum);
+      await updateTracking(trackingNum, name);
       const trackingInfo = await getrackingFromDB(trackingNum);
       res.status(200).send(trackingInfo[0]);
     }
