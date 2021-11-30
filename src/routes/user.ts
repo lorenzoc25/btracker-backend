@@ -11,6 +11,9 @@ import { AuthRequest } from '../../types/auth';
 import { PackageModel } from '../schema/packageSchema';
 import { Package } from '../../types/package';
 
+import getrackingFromDB from '../functions/getTrackingFromDB';
+import updateTracking from '../functions/updateTracking';
+
 interface UserPostRequest {
   email?: string,
   username?: string,
@@ -135,7 +138,18 @@ router.get('/tracking', async (
     if (trackingInfo === null) {
       return;
     }
-    trackingList.push(trackingInfo);
+    console.log(trackingInfo);
+    if (Date.now() - trackingInfo.lastUpdate < 1800 * 1000) {
+      trackingList.push(trackingInfo);
+    } else {
+      const { name } = trackingInfo;
+      await PackageModel.deleteMany({
+        tracking,
+      });
+      await updateTracking(tracking, name);
+      const newInfo = await getrackingFromDB(tracking);
+      trackingList.push(newInfo[0]);
+    }
   }));
   trackingList.sort(comparator);
   res.status(200).send(trackingList);
