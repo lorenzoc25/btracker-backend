@@ -24,7 +24,7 @@ const main = async () => {
   app.use(cors({
     origin: [
       'http://localhost:3000',
-      'http://btracker.xyz',
+      'https://btracker.xyz',
     ],
     optionsSuccessStatus: 200,
   }));
