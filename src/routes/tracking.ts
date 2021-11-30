@@ -1,4 +1,5 @@
 import express, {
+  Request,
   Response,
 } from 'express';
 
@@ -11,19 +12,9 @@ import { UserModel } from '../schema/userSchema';
 const router = express.Router();
 
 router.get('/:trackingId', async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
 ) => {
-  if (
-    req.auth === undefined
-    || req.auth.email === undefined
-  ) {
-    res.status(403).json({
-      message: 'The access token is missing or invalid',
-    });
-    return;
-  }
-
   const trackingNum = req.params.trackingId;
 
   try {
