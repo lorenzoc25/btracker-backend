@@ -24,6 +24,7 @@ const main = async () => {
   app.use(cors({
     origin: [
       'http://localhost:3000',
+      'https://btracker.xyz',
     ],
     optionsSuccessStatus: 200,
   }));
@@ -46,7 +47,7 @@ const main = async () => {
         methods: ['POST'],
       },
       {
-        url: new RegExp('/tracking/[0-9]+'),
+        url: new RegExp('/tracking/[.]*'),
         methods: ['GET'],
       },
       {
