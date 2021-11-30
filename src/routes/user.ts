@@ -17,6 +17,13 @@ interface UserPostRequest {
   password?: string,
 }
 
+const comparator = (package1: Package, package2: Package) => {
+  if (package1.tracking > package2.tracking) {
+    return -1;
+  }
+  return 1;
+};
+
 const router = express.Router();
 
 router.post('/', async (
@@ -130,7 +137,7 @@ router.get('/tracking', async (
     }
     trackingList.push(trackingInfo);
   }));
-
+  trackingList.sort(comparator);
   res.status(200).send(trackingList);
 });
 
