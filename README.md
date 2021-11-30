@@ -1,4 +1,5 @@
 # btracker-backend
+
 <div align="center">
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-typescript.svg)](https://forthebadge.com)
@@ -14,20 +15,24 @@
 - 🔒 JWT: Self-content, stateless Authentication to reduce server loads.
 
 ## 📦  Build and Run
+
 We need to install the MongoDB into your computer
-https://docs.mongodb.com/manual/installation/
+<https://docs.mongodb.com/manual/installation/>
 
 First, install the necessary packages:
+
 ```bash
 npm i
 ```
 
 To build the package
+
 ```bash
 npm run build
 ```
 
 Then, to run the backend
+
 ```bash
 npm run start
 ```
